@@ -15,9 +15,11 @@ await connectDB();
 
 
 //Middleware
-app.use(cors());
+app.use(cors({
+    origin: 'https://car-rental-website-olive-gamma.vercel.app/'
+}));
 app.use(express.json());
-app.use("/uploads", express.static("uploads")); // serve uploaded images statically
+
 
 //Routes
 app.get('/', (req, res) => {

@@ -181,8 +181,8 @@ export const updateUserImage = async (req, res) => {
             return res.json({ success: false, message: "No image uploaded" });
         }
 
-        // Save local uploads path
-        const image = "/uploads/" + req.file.filename;
+        // Save Cloudinary URL
+        const image = req.file.path;
 
         await User.findByIdAndUpdate(_id, { image });
 
