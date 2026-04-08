@@ -23,23 +23,34 @@ const checkAvailability = async (car, pickupDate, returnDate) => {
 export const checkCarAvailability = async (req, res) => {
     try {
         const { location, pickupDate, returnDate } = req.body;
-        
-        console.log('Search params:', { location, pickupDate, returnDate });
-        
-        // First, get ALL cars to debug
-        const allCars = await Car.find({});
-        console.log('Total cars in database:', allCars.length);
-        console.log('All cars:', allCars.map(c => ({ brand: c.brand, model: c.model, location: c.location, isAvailable: c.isAvailable })));
-        
-        // Now search for location
-        const cars = await Car.find({ location: { $regex: location, $options: 'i' }, isAvailable: true });
-        
-        console.log('Cars found for location "' + location + '":', cars.length);
-        
-        res.json({ success: true, cars: cars });
+
+        const picked = parseDateOnlyToUTC(pickupDate);
+        const returned = parseDateOnlyToUTC(returnDate);
+
+        if (!location || !picked || !returned) {
+            return res.json({ success: false, message: 'Please provide location and valid dates' });
+        }
+
+        if (returned <= picked) {
+            return res.json({ success: false, message: 'Return date must be after pickup date' });
+        }
+
+        const candidateCars = await Car.find({
+            location: { $regex: location, $options: 'i' },
+            isAvailable: true,
+        });
+
+        const availableCars = [];
+
+        for (const car of candidateCars) {
+            const isAvailable = await checkAvailability(car._id, picked, returned);
+            if (isAvailable) {
+                availableCars.push(car);
+            }
+        }
+
+        res.json({ success: true, cars: availableCars });
     } catch (error) {
-        console.log('Error:', error.message);
-        console.log('Error stack:', error.stack);
         res.json({ success: false, message: error.message });
     }
 };
