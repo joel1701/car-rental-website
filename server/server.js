@@ -16,7 +16,8 @@ await connectDB();
 
 //Middleware
 app.use(cors({
-    origin: 'https://car-rental-website-olive-gamma.vercel.app/'
+    origin: ['http://localhost:5173', 'https://car-rental-website-olive-gamma.vercel.app'],
+    credentials: true
 }));
 app.use(express.json());
 
