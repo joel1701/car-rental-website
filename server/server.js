@@ -15,7 +15,7 @@ await connectDB();
 
 
 //Middleware
-import cors from "cors";
+
 
 app.use(cors({
     origin: "https://car-rental-website-olive-gamma.vercel.app",
