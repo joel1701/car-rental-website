@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { assets, cityList } from '../assets/assets'
 import { useAppContext } from '../context/AppContext'
 import { motion } from 'motion/react'
+import { createSearchParams } from 'react-router-dom'
 
 const Hero = () => {
 
@@ -12,7 +13,12 @@ const Hero = () => {
 
     const handleSearch = (e) =>{
         e.preventDefault()
-        navigate('/cars?pickupLocation='+pickupLocation+'&pickupDate='+pickupDate+'&returnDate='+returnDate)
+        const search = createSearchParams({
+            pickupLocation,
+            pickupDate,
+            returnDate,
+        })
+        navigate({ pathname: '/cars', search: `?${search.toString()}` })
     }
 
   return (
@@ -90,6 +96,7 @@ const Hero = () => {
                     </div>
             </div>
                     <motion.button
+                        type="submit"
                     whileHover={{scale: 1.05}}
                     whileTap={{scale: 0.95}}
                     className='flex items-center jusitfy-center gap-1 px-9 py-3
