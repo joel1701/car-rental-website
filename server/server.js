@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 import "dotenv/config";
 import connectDB from './configs/db.js';
 import userRouter from './routes/userRoutes.js';
@@ -8,23 +7,21 @@ import bookingRouter from './routes/bookingRoutes.js';
 
 const app = express();
 
-// Connect to MongoDB
+// Connect DB
 await connectDB();
 
-// ✅ CORS (FINAL FIX)
-app.use(cors({
-    origin: "https://car-rental-website-olive-gamma.vercel.app",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
-// ✅ Force headers (fixes Render issues)
+// ✅ CORS (WORKING VERSION — no library issues)
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://car-rental-website-olive-gamma.vercel.app");
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader("Access-Control-Allow-Origin", "https://car-rental-website-olive-gamma.vercel.app");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+    // Handle preflight requests
+    if (req.method === "OPTIONS") {
+        return res.sendStatus(200);
+    }
+
     next();
 });
 
