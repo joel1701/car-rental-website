@@ -21,8 +21,7 @@ app.use(cors({
     origin: "https://car-rental-website-olive-gamma.vercel.app",
     credentials: true
 }));
-
-app.options("*", cors());
+app.options("/*", cors());
 app.use(express.json());
 
 
